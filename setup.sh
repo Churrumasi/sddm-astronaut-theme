@@ -18,7 +18,7 @@ readonly DATE=$(date +%s)
 readonly -a THEMES=(
     "astronaut" "black_hole" "cyberpunk" "hyprland_kath" "jake_the_dog"
     "japanese_aesthetic" "pixel_sakura" "pixel_sakura_static"
-    "post-apocalyptic_hacker" "purple_leaves" "Rosaria"
+    "post-apocalyptic_hacker" "purple_leaves" "Rosaria" "Lynette" "Anime" "Mita" "Neuro" "Lenovo"
 )
 
 # Logging with gum fallback
