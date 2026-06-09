@@ -1,10 +1,10 @@
 #!/bin/bash
 
-## SDDM Astronaut Theme Installer
-## Based on original by Churrumasi https://github.com/Churrumasi/sddm-astronaut-theme
+## Instalador del tema SDDM Astronaut
+## Basado en el trabajo original de Churrumasi https://github.com/Churrumasi/sddm-astronaut-theme
 ## Copyright (C) 2022-2025 Churrumasi
 
-# Script works in Arch, Fedora, Ubuntu. Didn't tried in Void and openSUSE
+# El script funciona en Arch, Fedora y Ubuntu. No se ha probado en Void ni openSUSE.
 
 set -euo pipefail
 
@@ -87,16 +87,16 @@ install_gum() {
             curl -fsSL https://repo.charm.sh/apt/gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/charm.gpg
             echo "deb [signed-by=/etc/apt/keyrings/charm.gpg] https://repo.charm.sh/apt/ * *" | sudo tee /etc/apt/sources.list.d/charm.list
             sudo apt update && sudo apt install -y gum ;;
-        *) error "Cannot install gum automatically"; return 1 ;;
+        *) error "No se puede instalar gum automáticamente"; return 1 ;;
     esac
 }
 
 # Check and install gum
 check_gum() {
     if ! command -v gum &>/dev/null; then
-        warn "Gum was not found - provides better UI experience"
-        if confirm "Install gum?"; then
-            install_gum && { info "Restarting with gum..."; main; } || warn "Using fallback UI"
+        warn "No se encontró gum: ofrece una mejor experiencia de interfaz"
+        if confirm "¿Instalar gum?"; then
+            install_gum && { info "Reiniciando con gum..."; main; } || warn "Usando interfaz alternativa"
         fi
     fi
 }
@@ -104,7 +104,7 @@ check_gum() {
 # Install dependencies
 install_deps() {
     local mgr=$(for m in pacman xbps-install dnf zypper apt; do command -v $m &>/dev/null && { echo $m; break; }; done)
-    info "Package manager: $mgr"
+    info "Gestor de paquetes: $mgr"
 
     case $mgr in
         pacman) sudo pacman --needed -S sddm qt6-svg qt6-virtualkeyboard qt6-multimedia-ffmpeg ;;
@@ -112,16 +112,16 @@ install_deps() {
         dnf) sudo dnf install -y sddm qt6-qtsvg qt6-qtvirtualkeyboard qt6-qtmultimedia ;;
         zypper) sudo zypper install -y sddm libQt6Svg6 qt6-virtualkeyboard qt6-multimedia ;;
         apt) sudo apt update && sudo apt install -y sddm qt6-svg-dev qml6-module-qtquick-virtualkeyboard qt6-multimedia-dev ;;
-        *) error "Unsupported package manager"; return 1 ;;
+        *) error "Gestor de paquetes no compatible"; return 1 ;;
     esac
-    info "Dependencies installed"
+    info "Dependencias instaladas"
 }
 
 # Clone repository
 clone_repo() {
     [[ -d "$PATH_TO_GIT_CLONE" ]] && mv "$PATH_TO_GIT_CLONE" "${PATH_TO_GIT_CLONE}_$DATE"
-    spin "Cloning repository..." git clone -b master --depth 1 "$THEME_REPO" "$PATH_TO_GIT_CLONE"
-    info "Repository cloned to $PATH_TO_GIT_CLONE"
+    spin "Clonando repositorio..." git clone -b master --depth 1 "$THEME_REPO" "$PATH_TO_GIT_CLONE"
+    info "Repositorio clonado en $PATH_TO_GIT_CLONE"
 }
 
 # Install theme
@@ -129,7 +129,7 @@ install_theme() {
     local src="$HOME/$THEME_NAME"
     local dst="$THEMES_DIR/$THEME_NAME"
 
-    [[ ! -d "$src" ]] && { error "Clone repository first"; return 1;}
+    [[ ! -d "$src" ]] && { error "Primero clona el repositorio"; return 1;}
 
     # Backup and copy
     [[ -d "$dst" ]] && sudo mv "$dst" "${dst}_$DATE"
@@ -137,7 +137,7 @@ install_theme() {
     spin "Installing theme files..." sudo cp -r "$src"/* "$dst"/
 
     # Install fonts
-    [[ -d "$dst/Fonts" ]] && spin "Installing fonts..." sudo cp -r "$dst/Fonts"/* /usr/share/fonts/
+    [[ -d "$dst/Fonts" ]] && spin "Instalando fuentes..." sudo cp -r "$dst/Fonts"/* /usr/share/fonts/
 
     # Configure SDDM
     echo "[Theme]
@@ -147,16 +147,16 @@ install_theme() {
     echo "[General]
     InputMethod=qtvirtualkeyboard" | sudo tee /etc/sddm.conf.d/virtualkbd.conf >/dev/null
 
-    info "Theme installed"
+    info "Tema instalado"
 }
 
 # Select theme variant
 select_theme() {
-    [[ ! -f "$METADATA" ]] && { error "Install theme first"; return 1; }
+    [[ ! -f "$METADATA" ]] && { error "Primero instala el tema"; return 1; }
     
     local theme=$(choose "${THEMES[@]}" || echo "astronaut")
     sudo sed -i "s|^ConfigFile=.*|ConfigFile=Themes/${theme}.conf|" "$METADATA"
-    info "Selected theme: $theme"
+    info "Tema seleccionado: $theme"
 }
 
 _disable_dm_systemd() {
@@ -185,7 +185,7 @@ _runit_runsvdir() {
     if   [ -d /run/runit/service ];          then echo "/run/runit/service"
     elif [ -d /etc/runit/runsvdir/default ]; then echo "/etc/runit/runsvdir/default"
     else
-        error "Cannot find runit service directory"
+        error "No se encontró el directorio de servicios de runit"
         return 1
     fi
 }
@@ -214,7 +214,7 @@ detect_init() {
 enable_sddm() {
     local init
     init=$(detect_init)
-    info "Detected init system: $init"
+    info "Sistema init detectado: $init"
 
     case "$init" in
         systemd)
@@ -234,18 +234,18 @@ enable_sddm() {
             runsvdir=$(_runit_runsvdir)
 
             if [ ! -d /etc/sv/sddm ]; then
-                error "/etc/sv/sddm not found - is sddm-runit (or equivalent) installed?"
+                error "/etc/sv/sddm no encontrado: ¿está instalado sddm-runit (o equivalente)?"
                 return 1
             fi
 
             _disable_dm_runit
             sudo ln -sf /etc/sv/sddm "$runsvdir/sddm"
-            info "sddm symlinked into $runsvdir"
+            info "sddm enlazado en $runsvdir"
             ;;
 
         dinit)
             if [ ! -f /etc/dinit.d/sddm ]; then
-                error "/etc/dinit.d/sddm not found - is sddm-dinit (or equivalent) installed?"
+                error "/etc/dinit.d/sddm no encontrado: ¿está instalado sddm-dinit (o equivalente)?"
                 return 1
             fi
 
@@ -263,8 +263,8 @@ enable_sddm() {
 
         # ── Unknown / manual fallback ─────────────────────
         *)
-            warn "Could not detect init system automatically."
-            warn "Please enable sddm manually:"
+            warn "No se pudo detectar el sistema init automáticamente."
+            warn "Habilita sddm manualmente:"
             echo ""
             echo "  systemd  -  sudo systemctl enable --now sddm"
             echo "  openrc   -  sudo rc-update add sddm default"
@@ -298,49 +298,49 @@ preview_theme(){
 
 
     local theme="$(sed -n 's|^ConfigFile=Themes/\(.*\)\.conf|\1|p' $METADATA)"
-    info "Preview closed ($theme theme found)." 
-    info "Log file: $log_file"
+    info "Vista previa cerrada (tema $theme encontrado)."
+    info "Archivo de registro: $log_file"
 }
 
 # Main menu
 main() {
-    [[ $EUID -eq 0 ]] && { error "Don't run as root"; exit 1; }
-    command -v git &>/dev/null || { error "git required"; exit 1; }
+    [[ $EUID -eq 0 ]] && { error "No ejecutes el script como root"; exit 1; }
+    command -v git &>/dev/null || { error "Se requiere git"; exit 1; }
 
     check_gum
     clear
     while true; do
         if command -v gum &>/dev/null; then
-            gum style --bold --padding "0 2" --border double --border-foreground 12 "🚀 SDDM Astronaut Theme Installer"
+            gum style --bold --padding "0 2" --border double --border-foreground 12 "🚀 Instalador del tema SDDM Astronaut"
         else
-            echo -e "\e[36m🚀 SDDM Astronaut Theme Installer\e[0m"
+            echo -e "\e[36m🚀 Instalador del tema SDDM Astronaut\e[0m"
         fi
 
         local choice=$(choose \
-            "🚀 Complete Installation (recommended)" \
-            "📦 Install Dependencies" \
-            "📥 Clone Repository" \
-            "📂 Install Theme" \
-            "🔧 Enable SDDM Service" \
-            "🎨 Select Theme Variant" \
-            "✨ Preview the set theme" \
-            "❌ Exit")
+            "🚀 Instalación completa (recomendada)" \
+            "📦 Instalar dependencias" \
+            "📥 Clonar repositorio" \
+            "📂 Instalar tema" \
+            "🔧 Habilitar servicio SDDM" \
+            "🎨 Seleccionar variante del tema" \
+            "✨ Vista previa del tema seleccionado" \
+            "❌ Salir")
 
         case "$choice" in
-            "🚀 Complete Installation (recommended)") install_deps && clone_repo && install_theme && select_theme && enable_sddm && info "Everything done!" && exit 0;;
-            "📦 Install Dependencies") install_deps ;;
-            "📥 Clone Repository") clone_repo ;;
-            "📂 Install Theme") install_theme ;;
-            "🔧 Enable SDDM Service") enable_sddm ;;
-            "🎨 Select Theme Variant") select_theme ;;
-            "✨ Preview the set theme") preview_theme;;
-            "❌ Exit") info "Goodbye!"; exit 0 ;;
+            "🚀 Instalación completa (recomendada)") install_deps && clone_repo && install_theme && select_theme && enable_sddm && info "¡Todo listo!" && exit 0;;
+            "📦 Instalar dependencias") install_deps ;;
+            "📥 Clonar repositorio") clone_repo ;;
+            "📂 Instalar tema") install_theme ;;
+            "🔧 Habilitar servicio SDDM") enable_sddm ;;
+            "🎨 Seleccionar variante del tema") select_theme ;;
+            "✨ Vista previa del tema seleccionado") preview_theme;;
+            "❌ Salir") info "¡Hasta luego!"; exit 0 ;;
         esac
 
         echo; if command -v gum &>/dev/null; then
-            gum input --placeholder="Press Enter to continue..."
+            gum input --placeholder="Presiona Enter para continuar..."
         else
-            echo -n "Press Enter to continue..."; read -r
+            echo -n "Presiona Enter para continuar..."; read -r
         fi
     done
 }
