@@ -1,14 +1,14 @@
 #!/bin/bash
 
 ## SDDM Astronaut Theme Installer
-## Based on original by Keyitdev https://github.com/Keyitdev/sddm-astronaut-theme
-## Copyright (C) 2022-2025 Keyitdev
+## Based on original by Churrumasi https://github.com/Churrumasi/sddm-astronaut-theme
+## Copyright (C) 2022-2025 Churrumasi
 
 # Script works in Arch, Fedora, Ubuntu. Didn't tried in Void and openSUSE
 
 set -euo pipefail
 
-readonly THEME_REPO="https://github.com/Keyitdev/sddm-astronaut-theme.git"
+readonly THEME_REPO="https://github.com/Churrumasi/sddm-astronaut-theme.git"
 readonly THEME_NAME="sddm-astronaut-theme"
 readonly THEMES_DIR="/usr/share/sddm/themes"
 readonly PATH_TO_GIT_CLONE="$HOME/$THEME_NAME"
@@ -18,7 +18,7 @@ readonly DATE=$(date +%s)
 readonly -a THEMES=(
     "astronaut" "black_hole" "cyberpunk" "hyprland_kath" "jake_the_dog"
     "japanese_aesthetic" "pixel_sakura" "pixel_sakura_static"
-    "post-apocalyptic_hacker" "purple_leaves"
+    "post-apocalyptic_hacker" "purple_leaves" "Rosaria"
 )
 
 # Logging with gum fallback
