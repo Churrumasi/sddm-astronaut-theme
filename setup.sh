@@ -233,13 +233,13 @@ enable_sddm() {
             local runsvdir
             runsvdir=$(_runit_runsvdir)
 
-            if [ ! -d /etc/sv/sddm ]; then
-                error "/etc/sv/sddm no encontrado: ¿está instalado sddm-runit (o equivalente)?"
+            if [ ! -d /etc/runit/sv/sddm ]; then
+                error "/etc/runit/sv/sddm no encontrado: ¿está instalado sddm-runit (o equivalente)?"
                 return 1
             fi
 
             _disable_dm_runit
-            sudo ln -sf /etc/sv/sddm "$runsvdir/sddm"
+            sudo ln -sf /etc/runit/sv/sddm "$runsvdir/sddm"
             info "sddm enlazado en $runsvdir"
             ;;
 
@@ -268,7 +268,7 @@ enable_sddm() {
             echo ""
             echo "  systemd  -  sudo systemctl enable --now sddm"
             echo "  openrc   -  sudo rc-update add sddm default"
-            echo "  runit    -  sudo ln -s /etc/sv/sddm /run/runit/service/"
+            echo "  runit    -  sudo ln -s /etc/runit/sv/sddm /run/runit/service/"
             echo "  dinit    -  sudo ln -s /etc/dinit.d/sddm /etc/dinit.d/boot.d/sddm"
             return 1
             ;;
