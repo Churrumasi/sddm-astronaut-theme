@@ -51,7 +51,7 @@ https://github.com/user-attachments/assets/181d48c2-f152-45f5-b568-21145be180f6
 ### Automatic Installation
 
 ```sh
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/keyitdev/sddm-astronaut-theme/master/setup.sh)"
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/churrumasi/sddm-astronaut-theme/master/setup.sh)"
 ```
 > Works on distributions using pacman, xbps-install, dnf, zypper.   
 > Remember to always read the scripts you run from the internet.
